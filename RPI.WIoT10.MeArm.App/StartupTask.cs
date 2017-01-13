@@ -16,6 +16,8 @@ namespace RPI.WIoT10.MeArm.App
         FEZUtilityShield shield;
         GripperComponent gripper;
         TurnTableComponent turntable;
+        LeverComponent upperLever;
+        LeverComponent lowerLever;
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -33,7 +35,10 @@ namespace RPI.WIoT10.MeArm.App
             setupTasks.Add(ControllableComponent.RegisterComponent(gripper));
             turntable = new TurnTableComponent(new Servo(new PCA9685PWMChannel(shield.PCA9685PWM, (int)FEZUtilityShield.PwmPin.P0)));
             setupTasks.Add(ControllableComponent.RegisterComponent(turntable));
-
+            lowerLever = new LeverComponent(new Servo(new PCA9685PWMChannel(shield.PCA9685PWM, (int)FEZUtilityShield.PwmPin.P1)), "LowerLever");
+            setupTasks.Add(ControllableComponent.RegisterComponent(lowerLever));
+            upperLever = new LeverComponent(new Servo(new PCA9685PWMChannel(shield.PCA9685PWM, (int)FEZUtilityShield.PwmPin.P2)), "UpperLever");
+            setupTasks.Add(ControllableComponent.RegisterComponent(upperLever));
             await Task.WhenAll(setupTasks).ConfigureAwait(false);
 
         }
