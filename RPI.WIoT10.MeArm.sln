@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPI.WIoT10.MeArm.App", "RPI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPI.WIoT10.MeArm.Components", "RPI.WIoT10.MeArm.Components\RPI.WIoT10.MeArm.Components.csproj", "{93AACFA3-2E93-4357-8F28-6861C46DD81F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPI.WIoT10.MeArm.Control", "RPI.WIoT10.MeArm.Control\RPI.WIoT10.MeArm.Control.csproj", "{017389CF-0CFD-412C-8C12-7D5A01909A52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -183,6 +185,26 @@ Global
 		{93AACFA3-2E93-4357-8F28-6861C46DD81F}.Release|x64.Build.0 = Release|x64
 		{93AACFA3-2E93-4357-8F28-6861C46DD81F}.Release|x86.ActiveCfg = Release|x86
 		{93AACFA3-2E93-4357-8F28-6861C46DD81F}.Release|x86.Build.0 = Release|x86
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|ARM.ActiveCfg = Debug|ARM
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|ARM.Build.0 = Debug|ARM
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|ARM.Deploy.0 = Debug|ARM
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|x64.ActiveCfg = Debug|x64
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|x64.Build.0 = Debug|x64
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|x64.Deploy.0 = Debug|x64
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|x86.ActiveCfg = Debug|x86
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|x86.Build.0 = Debug|x86
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Debug|x86.Deploy.0 = Debug|x86
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|Any CPU.ActiveCfg = Release|x86
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|ARM.ActiveCfg = Release|ARM
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|ARM.Build.0 = Release|ARM
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|ARM.Deploy.0 = Release|ARM
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|x64.ActiveCfg = Release|x64
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|x64.Build.0 = Release|x64
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|x64.Deploy.0 = Release|x64
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|x86.ActiveCfg = Release|x86
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|x86.Build.0 = Release|x86
+		{017389CF-0CFD-412C-8C12-7D5A01909A52}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
