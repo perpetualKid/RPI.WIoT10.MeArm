@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Devices.Communication;
+using Devices.Controllers.Base;
 using Devices.Util.Extensions;
 using RPI.WIoT10.MeArm.Control.Controller;
 using Windows.ApplicationModel.Core;
@@ -43,7 +44,10 @@ namespace RPI.WIoT10.MeArm.Control.Views
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            await Connect(sender);
+            if (await Connect(sender))
+            {
+                btnConnect.IsEnabled = false;
+            }
         }
 
         private async void Instance_OnDataReceived(JsonObject data)
@@ -70,37 +74,30 @@ namespace RPI.WIoT10.MeArm.Control.Views
             }
         }
 
-        private async Task Connect(object sender)
+        private async Task <bool> Connect(object sender)
         {
-            //string deviceHost = settings.Values[nameof(DeviceSettingNames.DeviceHost)] as string ?? string.Empty;
-            //string devicePort = settings.Values[nameof(DeviceSettingNames.DevicePort)] as string ?? string.Empty;
+            string deviceHost = settings.Values[nameof(DeviceSettingNames.DeviceHost)] as string ?? string.Empty;
+            string devicePort = settings.Values[nameof(DeviceSettingNames.DevicePort)] as string ?? string.Empty;
 
-            //ConnectionFlyoutText.Text = $"Please wait while trying to connect to device \"{deviceHost}\" on port \"{devicePort}\".";
-            //ConnectionFlyoutText.MaxWidth = Window.Current.CoreWindow.Bounds.Width;
-            //ConnectionFlyout.ShowAt(btnConnect as FrameworkElement);
+            ConnectionFlyoutText.Text = $"Please wait while trying to connect to device \"{deviceHost}\" on port \"{devicePort}\".";
+            ConnectionFlyoutText.MaxWidth = Window.Current.CoreWindow.Bounds.Width;
+            ConnectionFlyout.ShowAt(btnConnect as FrameworkElement);
 
-            //if (string.IsNullOrWhiteSpace(deviceHost) || string.IsNullOrWhiteSpace(devicePort))
-            //{
-            //    DisplayMissingHostParametersDialog(sender);
-            //    return;
-            //}
+            if (string.IsNullOrWhiteSpace(deviceHost) || string.IsNullOrWhiteSpace(devicePort))
+            {
+                DisplayMissingHostParametersDialog(sender);
+                return false;
+            }
 
-            //if (!await DeviceConnectionController.Instance.Connect(deviceHost, devicePort))
-            //{
-            //    ConnectionFlyout.Hide();
-            //    DisplayConnectionFailedDialog(sender, deviceHost, devicePort);
-            //    return;
-            //}
-            ////JsonObject hello = new JsonObject();
-            ////hello.AddValue("Target", "BrickPi.NxtColor.Port_S3");
-            ////hello.AddValue("Action", "ARGB");
-            ////await DeviceConnection.Instance.Send("LandingPage", hello);
-            ////ellColor.Fill = new SolidColorBrush(Colors.White);
-            ////await socketClient.Send(Guid.Empty, "ECHO");
-            ////await SocketClient.Disconnect();
-            ////                await Task.Run(() => JsonStreamReader.ReadEndless(file.OpenStreamForReadAsync().Result));
-            //ConnectionFlyout.Hide();
-            ////await imageSource.CaptureDeviceImage();
+            if (!await ControllerHandler.InitializeConnection(deviceHost, devicePort))
+            {
+                ConnectionFlyout.Hide();
+                DisplayConnectionFailedDialog(sender, deviceHost, devicePort);
+                return false;
+            }
+
+            ConnectionFlyout.Hide();
+            return true;
         }
 
         private async void DisplayMissingHostParametersDialog(object parameter)
@@ -178,6 +175,36 @@ namespace RPI.WIoT10.MeArm.Control.Views
                 start.AddValue("Action", "Start");
                 await DeviceConnectionController.Instance.Send("LandingPage", start);
 
+            }
+
+        }
+
+        private async void slider_ValueChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            //if (DeviceConnectionController.Instance.ConnectionStatus == ConnectionStatus.Connected)
+            //{
+            //    JsonObject gripper = new JsonObject();
+            //    gripper.AddValue("Target", "Gripper");
+            //    gripper.AddValue("Action", "Set");
+            //    gripper.AddValue("Position", e.NewValue);
+            //    await DeviceConnectionController.Instance.Send("LandingPage", gripper);
+            //    JsonObject gripperPosition = new JsonObject();
+            //    gripperPosition.AddValue("Target", "Gripper");
+            //    gripperPosition.AddValue("Action", "Get");
+            //    await DeviceConnectionController.Instance.Send("LandingPage", gripperPosition);
+            //}
+
+            if (ControllerHandler.Connection.ConnectionStatus == ConnectionStatus.Connected)
+            {
+                JsonObject gripper = new JsonObject();
+                gripper.AddValue("Target", "Gripper");
+                gripper.AddValue("Action", "Set");
+                gripper.AddValue("Position", e.NewValue);
+                await ControllerHandler.Connection.Send("LandingPage", gripper);
+                JsonObject gripperPosition = new JsonObject();
+                gripperPosition.AddValue("Target", "Gripper");
+                gripperPosition.AddValue("Action", "Get");
+                await ControllerHandler.Connection.Send("LandingPage", gripperPosition);
             }
 
         }

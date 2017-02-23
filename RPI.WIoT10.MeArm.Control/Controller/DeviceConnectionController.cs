@@ -41,7 +41,9 @@ namespace RPI.WIoT10.MeArm.Control.Controller
         private void SocketClient_OnMessageReceived(object sender, MessageReceivedEventArgs e)
         {
             JsonObject json = (e as JsonMessageArgs).Json;
-            if (json.ContainsKey(nameof(FixedNames.Sender)))
+            if (eventRoutingTable.ContainsKey("*"))
+                ((DataReceivedEventHandler)(eventRoutingTable["*"])).Invoke(json);
+            if (json.ContainsKey(nameof(FixedNames.Sender)) && eventRoutingTable.ContainsKey(json.GetNamedString(nameof(FixedNames.Sender))))
                 ((DataReceivedEventHandler)(eventRoutingTable[json.GetNamedString(nameof(FixedNames.Sender))])).Invoke(json);
         }
 

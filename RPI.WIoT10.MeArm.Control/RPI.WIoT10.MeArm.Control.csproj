@@ -100,7 +100,6 @@
       <DependentUpon>AppShell.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controller\DeviceConnectionController.cs" />
-    <Compile Include="Controller\ImageSourceController.cs" />
     <Compile Include="Controls\Joypad.xaml.cs">
       <DependentUpon>Joypad.xaml</DependentUpon>
     </Compile>
@@ -116,6 +115,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\AppSettingsPage.xaml.cs">
       <DependentUpon>AppSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DebugPage.xaml.cs">
+      <DependentUpon>DebugPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LandingPage.xaml.cs">
       <DependentUpon>LandingPage.xaml</DependentUpon>
@@ -172,6 +174,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\DebugPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LandingPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -194,10 +200,21 @@
       <Project>{1770bd3f-c09b-42e6-ac21-1db9b6ca37c6}</Project>
       <Name>Devices.Connectors</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\UWP.Devices\Devices.Controllers.Base\Devices.Controllers.Base.csproj">
+      <Project>{06AF08BD-FF54-4F13-BF8E-218044469632}</Project>
+      <Name>Devices.Controllers.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\UWP.Devices\Devices.Controllers.Common\Devices.Controllers.Common.csproj">
+      <Project>{ED9CE817-28E6-4BD9-BB99-FE712A319779}</Project>
+      <Name>Devices.Controllers.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\UWP.Devices\Devices.Util\Devices.Util.csproj">
       <Project>{E0B70271-C5F3-4BEB-B30E-45536A296387}</Project>
       <Name>Devices.Util</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Attributes\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

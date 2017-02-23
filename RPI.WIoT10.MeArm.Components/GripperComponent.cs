@@ -60,7 +60,7 @@ namespace RPI.WIoT10.MeArm.Components
         [ActionHelp("Gets the current gripper position between 0.0 (open) and 100 (close).")]
         private async Task GripperComponentGet(MessageContainer data)
         {
-            data.AddMultiPartValue("Position", servo.Position);
+            data.AddValue("Position", servo.Position);
             await ComponentHandler.HandleOutput(data).ConfigureAwait(false);
         }
 

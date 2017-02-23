@@ -49,7 +49,7 @@ namespace RPI.WIoT10.MeArm.Components
         [ActionHelp("Gets the current lever position between 0 and 180.")]
         private async Task LeverComponentGet(MessageContainer data)
         {
-            data.AddMultiPartValue("Position", servo.Position);
+            data.AddValue("Position", servo.Position);
             await ComponentHandler.HandleOutput(data).ConfigureAwait(false);
         }
 

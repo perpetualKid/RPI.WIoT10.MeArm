@@ -38,10 +38,16 @@ namespace RPI.WIoT10.MeArm.Control
                 },
                 new NavigationMenuItem()
                 {
-                    Symbol = Symbol.Favorite,
-                    Label = "Drill In Page",
-//                    DestPage = typeof(DrillInPage)
+                    Symbol = Symbol.Camera,
+                    Label = "Front Camera",
+                    DestinationPage = typeof(OnboardCameraPage)
                 },
+                new NavigationMenuItem()
+                {
+                    Symbol = Symbol.Comment,
+                    Label = "Debug Page",
+                    DestinationPage = typeof(DebugPage)
+                }
                 //new NavigationMenuItem()
                 //{
                 //    Symbol = Symbol.SyncFolder,
@@ -213,10 +219,10 @@ namespace RPI.WIoT10.MeArm.Control
             if (item != null)
             {
                 item.IsSelected = true;
-                if (item.DestPage != null &&
-                    item.DestPage != this.AppFrame.CurrentSourcePageType)
+                if (item.DestinationPage != null &&
+                    item.DestinationPage != this.AppFrame.CurrentSourcePageType)
                 {
-                    this.AppFrame.Navigate(item.DestPage, item.Arguments);
+                    this.AppFrame.Navigate(item.DestinationPage, item.Arguments);
                 }
             }
         }
@@ -231,14 +237,14 @@ namespace RPI.WIoT10.MeArm.Control
         {
             if (e.NavigationMode == NavigationMode.Back)
             {
-                var item = (from p in this.navlist where p.DestPage == e.SourcePageType select p).SingleOrDefault();
+                var item = (from p in this.navlist where p.DestinationPage == e.SourcePageType select p).SingleOrDefault();
                 if (item == null && this.AppFrame.BackStackDepth > 0)
                 {
                     // In cases where a page drills into sub-pages then we'll highlight the most recent
                     // navigation menu item that appears in the BackStack
                     foreach (var entry in this.AppFrame.BackStack.Reverse())
                     {
-                        item = (from p in this.navlist where p.DestPage == entry.SourcePageType select p).SingleOrDefault();
+                        item = (from p in this.navlist where p.DestinationPage == entry.SourcePageType select p).SingleOrDefault();
                         if (item != null)
                             break;
                     }

@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Devices.Communication;
 using Devices.Components;
 using Devices.Components.Common.Communication;
+using Devices.Components.Common.Media;
 using Devices.Hardware.Actors;
 using RPI.WIoT10.FEZUtility;
 using RPI.WIoT10.MeArm.Components;
 using Windows.ApplicationModel.Background;
+using Windows.Devices.Enumeration;
+using Windows.Media.Capture;
 
 namespace RPI.WIoT10.MeArm.App
 {
@@ -18,6 +22,7 @@ namespace RPI.WIoT10.MeArm.App
         TurnTableComponent turntable;
         LeverComponent upperLever;
         LeverComponent lowerLever;
+        CameraComponent frontCamera;
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -39,6 +44,21 @@ namespace RPI.WIoT10.MeArm.App
             setupTasks.Add(ComponentHandler.RegisterComponent(lowerLever));
             upperLever = new LeverComponent(new Servo(new PCA9685PWMChannel(shield.PCA9685PWM, (int)FEZUtilityShield.PwmPin.P2)), "UpperLever");
             setupTasks.Add(ComponentHandler.RegisterComponent(upperLever));
+
+            var videoDevices = await CameraComponent.GetAllVideoDevices().ConfigureAwait(false);
+
+            if (videoDevices.Count > 0)
+            {
+                frontCamera = new CameraComponent("FrontCamera",
+                    new MediaCaptureInitializationSettings
+                    {
+                        StreamingCaptureMode = StreamingCaptureMode.Video,
+                        PhotoCaptureSource = PhotoCaptureSource.Auto,
+                        AudioDeviceId = string.Empty,
+                        VideoDeviceId = videoDevices[0].Id
+                    });
+                setupTasks.Add(ComponentHandler.RegisterComponent(frontCamera));
+            }
             await Task.WhenAll(setupTasks).ConfigureAwait(false);
 
         }

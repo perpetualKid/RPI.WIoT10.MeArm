@@ -4,7 +4,7 @@
   <mp:PhoneIdentity PhoneProductId="4c9cf313-46c9-4932-a075-d8141197a071" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>RPI.WIoT10.MeArm.Control</DisplayName>
-    <PublisherDisplayName>steff</PublisherDisplayName>
+    <PublisherDisplayName>perpetualKid</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
@@ -25,5 +25,6 @@
   <Capabilities>
     <Capability Name="internetClient" />
     <Capability Name="internetClientServer" />
+    <Capability Name="privateNetworkClientServer" />
   </Capabilities>
 </Package>
