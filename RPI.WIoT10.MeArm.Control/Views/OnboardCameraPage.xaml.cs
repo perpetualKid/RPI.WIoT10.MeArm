@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using Devices.Controllers.Common;
+using RPI.WIoT10.MeArm.Control.Util;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -14,26 +18,76 @@ namespace RPI.WIoT10.MeArm.Control.Views
     public sealed partial class OnboardCameraPage : Page
     {
         private ImageSourceController imageSource;
+        private bool updating;
 
         public OnboardCameraPage()
         {
             this.InitializeComponent();
-            imageSource = ImageSourceController.GetNamedInstance<ImageSourceController>(nameof(ImageSourceController)).Result;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
+            imageSource = await ImageSourceController.GetNamedInstance<ImageSourceController>(nameof(ImageSourceController), "FrontCamera");
+            if (!await this.CheckConnection(e.Parameter))
+                return;
             imageSource.OnImageReceived += ImageSource_OnImageReceived;
-            imageSource.SupportedFormats.CollectionChanged += SupportedFormats_CollectionChanged;
+            imageSource.OnSupportedFormatsChanged += ImageSource_OnSupportedFormatsChanged;
+            await imageSource.InitializeFormats();
+            UpdateFormatSelectionElements(null);
+            base.OnNavigatedTo(e);
         }
 
-        private void SupportedFormats_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ImageSource_OnSupportedFormatsChanged(object sender, EventArgs e)
         {
-            dropdownResolutions.Items.Clear();
-            foreach (var item in imageSource.SupportedFormats)
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                dropdownResolutions.Items.Add(item);
+                UpdateFormatSelectionElements(sender);
+            });
+        }
+
+        private void UpdateFormatSelectionElements(object sender)
+        {
+
+            if (!updating)
+            {
+                updating = true;
+                object selectedValue;
+
+                if (sender != dropdownFormatSelection)
+                {
+                    selectedValue = dropdownFormatSelection.SelectedValue;
+                    dropdownFormatSelection.Items.Clear();
+                    foreach (ImageSourceController.ImageFormat item in imageSource.GetSupportedFormatsFiltered(dropDownFormats.SelectedValue as string, dropDownResolutions.SelectedValue as string))
+                    {
+                        dropdownFormatSelection.Items.Add(item);
+                    }
+                    dropdownFormatSelection.SelectedValue = dropdownFormatSelection.Items.SingleOrDefault(item => item.Equals(imageSource.CurrentImageFormat.Value));
+                }
+
+                if (sender != dropDownFormats)
+                {
+                    selectedValue = dropDownFormats.SelectedValue;
+                    dropDownFormats.Items.Clear();
+                    dropDownFormats.Items.Add(string.Empty);
+                    foreach (string format in imageSource.GetSupportedCaptureFormats(dropDownResolutions.SelectedValue as string))
+                    {
+                        dropDownFormats.Items.Add(format);
+                    }
+                    dropDownFormats.SelectedValue = selectedValue;
+                }
+
+                if (sender != dropDownResolutions)
+                {
+                    selectedValue = dropDownResolutions.SelectedValue;
+                    dropDownResolutions.Items.Clear();
+                    dropDownResolutions.Items.Add(string.Empty);
+                    foreach (string resolutionString in imageSource.GetSupportedCaptureResolutions(dropDownFormats.SelectedValue as string))
+                    {
+                        dropDownResolutions.Items.Add(resolutionString);
+                    }
+                    dropDownResolutions.SelectedValue = selectedValue;
+                }
+                updating = false;
             }
         }
 
@@ -41,32 +95,51 @@ namespace RPI.WIoT10.MeArm.Control.Views
         {
             base.OnNavigatedFrom(e);
             imageSource.OnImageReceived -= ImageSource_OnImageReceived;
-            imageSource.SupportedFormats.CollectionChanged -= SupportedFormats_CollectionChanged;
         }
 
-        private void ImageSource_OnImageReceived(object sender, EventArgs e)
+        private async void ImageSource_OnImageReceived(object sender, BitmapImage e)
         {
-            this.imgMain.Source = imageSource.CurrentImage;
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.imgMain.Source = e);
         }
 
         public ObservableCollection<BitmapImage> Items
         {
-            get { return this.imageSource.CachedImages; }
-        }
-
-        private async void btnLoad_Click(object sender, RoutedEventArgs e)
-        {
-            await imageSource.CaptureDeviceImage();
+            get { return this.imageSource?.CachedImages; }
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.imgMain.Source = this.imageSource.CachedImages[lvPictureCache.SelectedIndex];
+            if (lvPictureCache.SelectedIndex > -1)
+                this.imgMain.Source = this.imageSource.CachedImages[lvPictureCache.SelectedIndex];
         }
 
-        private async void dropdownResolutions_DropDownOpened(object sender, object e)
+        private void dropDownFormats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            await imageSource.GetSupportedModesRequest();
+            UpdateFormatSelectionElements(sender);
+        }
+
+        private void dropDownResolutions_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateFormatSelectionElements(sender);
+        }
+
+        private async void dropdownFormatSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ImageSourceController.ImageFormat? format = dropdownFormatSelection.SelectedValue as ImageSourceController.ImageFormat?;
+            if (!updating && format.HasValue)
+            {
+                await imageSource.SetCaptureFormat(format.Value);
+            }
+        }
+
+        private async void imgMain_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {
+            await imageSource.CaptureDeviceImage();
+        }
+
+        private async void AppBarButtonCapturePicture_Click(object sender, RoutedEventArgs e)
+        {
+            await imageSource.CaptureDeviceImage();
         }
     }
 }

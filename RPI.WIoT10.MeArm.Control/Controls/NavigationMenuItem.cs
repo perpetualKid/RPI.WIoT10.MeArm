@@ -46,6 +46,7 @@ namespace RPI.WIoT10.MeArm.Control.Controls
         public object Arguments { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
         public void OnPropertyChanged(string propertyName)
         {
             // Raise the PropertyChanged event, passing the name of the property whose value has changed.

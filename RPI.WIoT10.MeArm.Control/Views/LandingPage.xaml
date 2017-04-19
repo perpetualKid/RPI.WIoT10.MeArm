@@ -52,29 +52,24 @@
             </controls:PageHeader.HeaderContent>
         </controls:PageHeader>
 
-        <StackPanel Grid.Row="1" Margin="10,10,10,10">
-            <controls:Joypad Width="200" Height="200" Canvas.ZIndex="1" Moved="Joypad_Moved" Released="Joypad_Released" Captured="Joypad_Captured"/>
-            <TextBlock Name="JoypadValues">Test</TextBlock>
-        </StackPanel>
+        <Grid HorizontalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <controls:HorizontalSlider Grid.Row="0" Grid.ColumnSpan="2" x:Name="GripperSlider" ResetOnRelease="False" Width="300" Height="100" Moved="GripperSlider_Moved" Captured="GripperSlider_Captured" Released="GripperSlider_Released" />
+            <controls:VerticalSlider Grid.Row="1" Grid.Column="1" x:Name="UpperArmSlider" ResetOnRelease="False" Height="300" Width="100" Moved="UpperArmSlider_Moved" Captured="UpperArmSlider_Captured" Released="UpperArmSlider_Released"/>
+            <controls:VerticalSlider Grid.Row="1" Grid.Column="0" x:Name="LowerArmSlider" ResetOnRelease="False" Height="300" Width="100" Moved="LowerArmSlider_Moved" Captured="LowerArmSlider_Captured" Released="LowerArmSlider_Released"/>
+            <controls:HorizontalSlider Grid.Row="2" Grid.ColumnSpan="2" x:Name="TurnTableSlider" ResetOnRelease="False" Width="300" Height="100" Moved="TurnTableSlider_Moved" Captured="TurnTableSlider_Captured" Released="TurnTableSlider_Released" />
+        </Grid>
         <ScrollViewer Grid.Row="2" EntranceNavigationTransitionInfo.IsTargetElement="True" IsTabStop="True" Margin="12,4,0,0">
             <StackPanel x:Name="ContentContainer" Margin="12,0,12,0">
-                <Button Name="btnConnect" AutomationProperties.HelpText="Connect to the Device" Content="Connect" Click="Button_Click">
-                    <!--
-                    <Button.Flyout>
-                    <Flyout Placement="Top">
-                        <StackPanel Orientation="Vertical">
-                            <ProgressRing Grid.Row="0" IsActive="True" Width="30" Height="30" HorizontalAlignment="Center"/>
-                            <TextBlock Width="200" Margin="10,10,10,10" Grid.Row="1" Style="{StaticResource BodyTextBlockStyle}">
-                                This is a very long text for the textbox control inside the flyout connected to the button.
-                            </TextBlock>
-                            </StackPanel>
-                    </Flyout>
-                    </Button.Flyout>
-                    -->
-                </Button>
-                <Ellipse x:Name="ellColor" HorizontalAlignment="Left" Height="50" VerticalAlignment="Top" Width="50"/>
                 <Image x:Name="imageFrontCamera" Height="100" Width="100"/>
-                <Slider x:Name="slider" Width="100" ValueChanged="slider_ValueChanged"/>
                 <TextBlock Style="{StaticResource SubtitleTextBlockStyle}">Top-Level Navigation</TextBlock>
                 <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,4">This sample demonstrates a universal Windows app with top-level navigation.</TextBlock>
 

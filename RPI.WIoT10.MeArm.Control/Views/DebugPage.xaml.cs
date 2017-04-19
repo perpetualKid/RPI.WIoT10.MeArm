@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Devices.Controllers.Base;
-using Devices.Controllers.Common;
 using Windows.ApplicationModel.Core;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.Data.Json;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -26,33 +16,74 @@ namespace RPI.WIoT10.MeArm.Control.Views
     /// </summary>
     public sealed partial class DebugPage : Page
     {
-        private DebugController debugController;
+        DebugHandler debugHandler;
+        GenericController debugController;
 
         public DebugPage()
         {
             this.InitializeComponent();
-            debugController = DebugController.GetNamedInstance<DebugController>("DebugController").Result;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            debugController.OnDataReceived += DebugController_OnDataReceived;
-            textBox.Text = debugController.Textbuffer;
+            debugController = await GenericController.GetNamedInstance<GenericController>("DebugController", string.Empty);
+            debugHandler = DebugHandler.Instance;
+            debugHandler.OnDataReceived += DebugController_OnReceivedTextUpdated;
+            debugHandler.OnDataSent += DebugController_OnSentTextUpdated;
+            txtTextReceived.Text = debugHandler.DataReceived;
+            txtTextSent.Text = debugHandler.DataSent;
+        }
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            debugHandler.OnDataReceived -= DebugController_OnReceivedTextUpdated;
+            debugHandler.OnDataSent -= DebugController_OnSentTextUpdated;
+            base.OnNavigatedFrom(e);
         }
 
-        private async void DebugController_OnDataReceived(object sender, string data)
+        private async void DebugController_OnSentTextUpdated(object sender, EventArgs e)
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                textBox.Text = debugController.Textbuffer;
+                txtTextSent.Text = debugHandler.DataSent;
             });
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        private async void DebugController_OnReceivedTextUpdated(object sender, EventArgs e)
         {
-            debugController.OnDataReceived -= DebugController_OnDataReceived;
-            base.OnNavigatedFrom(e);
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                txtTextReceived.Text = debugHandler.DataReceived;
+            });
+        }
+
+        private void btnTextReceivedClear_Click(object sender, RoutedEventArgs e)
+        {
+            debugHandler?.ClearReceivedBuffer();
+        }
+
+        private void btnTextSentClear_Click(object sender, RoutedEventArgs e)
+        {
+            debugHandler?.ClearSentBuffer();
+        }
+
+        private async void btnCommandAction_Click(object sender, RoutedEventArgs e)
+        {
+            JsonObject data;
+            if (JsonObject.TryParse(txtTextCommand.Text, out data))
+            {
+                await debugController.SendRequest(data, true);
+            }
+            else
+            {
+                ContentDialog invalidJsonDialog = new ContentDialog()
+                {
+                    Title = "Json Command not valid",
+                    Content = "Please specify a valid Json string to be sent to the device host.",
+                    PrimaryButtonText = "Ok"
+                };
+                await invalidJsonDialog.ShowAsync();
+            }
         }
     }
 }
