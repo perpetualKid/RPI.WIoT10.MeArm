@@ -134,10 +134,10 @@ namespace RPI.WIoT10.MeArm.Control.Views
 
         private async void TurnTableSlider_Released(object sender, Controls.SliderEventArgs e)
         {
-            if (ControllerHandler.ConnectionStatus == ConnectionStatus.Connected)
-            {
-                await landingPageController.SendRequest("Disengage", "TurnTable");
-            }
+            //if (ControllerHandler.ConnectionStatus == ConnectionStatus.Connected)
+            //{
+            //    await landingPageController.SendRequest("Disengage", "TurnTable");
+            //}
         }
 
         private async void UpperArmSlider_Moved(object sender, Controls.SliderEventArgs e)
@@ -162,10 +162,10 @@ namespace RPI.WIoT10.MeArm.Control.Views
 
         private async void UpperArmSlider_Released(object sender, Controls.SliderEventArgs e)
         {
-            if (ControllerHandler.ConnectionStatus == ConnectionStatus.Connected)
-            {
-                await landingPageController.SendRequest("Disengage", "UpperLever");
-            }
+            //if (ControllerHandler.ConnectionStatus == ConnectionStatus.Connected)
+            //{
+            //    await landingPageController.SendRequest("Disengage", "UpperLever");
+            //}
         }
 
         private async void LowerArmSlider_Moved(object sender, Controls.SliderEventArgs e)
@@ -190,10 +190,22 @@ namespace RPI.WIoT10.MeArm.Control.Views
 
         private async void LowerArmSlider_Released(object sender, Controls.SliderEventArgs e)
         {
+            //if (ControllerHandler.ConnectionStatus == ConnectionStatus.Connected)
+            //{
+            //    await landingPageController.SendRequest("Disengage", "LowerLever");
+            //}
+        }
+
+        private async void button_Click(object sender, RoutedEventArgs e)
+        {
             if (ControllerHandler.ConnectionStatus == ConnectionStatus.Connected)
             {
                 await landingPageController.SendRequest("Disengage", "LowerLever");
+                await landingPageController.SendRequest("Disengage", "UpperLever");
+                await landingPageController.SendRequest("Disengage", "TurnTable");
+                await landingPageController.SendRequest("Disengage", "Gripper");
             }
+
         }
     }
 }

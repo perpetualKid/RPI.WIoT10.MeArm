@@ -68,27 +68,7 @@
             <controls:HorizontalSlider Grid.Row="2" Grid.ColumnSpan="2" x:Name="TurnTableSlider" ResetOnRelease="False" Width="300" Height="100" Moved="TurnTableSlider_Moved" Captured="TurnTableSlider_Captured" Released="TurnTableSlider_Released" />
         </Grid>
         <ScrollViewer Grid.Row="2" EntranceNavigationTransitionInfo.IsTargetElement="True" IsTabStop="True" Margin="12,4,0,0">
-            <StackPanel x:Name="ContentContainer" Margin="12,0,12,0">
-                <Image x:Name="imageFrontCamera" Height="100" Width="100"/>
-                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}">Top-Level Navigation</TextBlock>
-                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,4">This sample demonstrates a universal Windows app with top-level navigation.</TextBlock>
-
-                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,12,0,4">Overview</TextBlock>
-                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,4">The root of the app is an AppShell of type Page instead of a Frame.
-                    It uses a SplitView to present both the top-level navigation menu and a Frame for navigating between pages in the app.  The AppShell also
-                    provides basic keyboarding behavior for unhandled key presses.  The navigation menu is implemented using a customized ListView and
-                    to enable the expected keyboarding experience.  The "hamburger" button for the app is floating in the top corner of the app at a
-                    higher z-order.  To enable content on individual pages to be aware of the floating "hamburger" the app uses a PageHeader control
-                    that is aware of the "hamburger".
-                </TextBlock>
-
-                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,12,0,4">Things to see:</TextBlock>
-                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,8"> 1) App.xaml - The startup sequence using AppShell as the root element instead of a Frame.</TextBlock>
-                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,8"> 2) AppShell.xaml - The "chrome" of the app.</TextBlock>
-                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,8"> 3) PageHeader.xaml - Control to wrap an item on a Page to avoid visual overlap with the floating hamburger.</TextBlock>
-                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,8"> 4) Styles.xaml - Styles including one for a hamburger button.</TextBlock>
-                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,8"> 5) NavMenuListView class - A customized ListView to show the navigation items and handle keyboarding.</TextBlock>
-            </StackPanel>
+            <Button x:Name="button" Content="Button" Click="button_Click"/>
         </ScrollViewer>
     </Grid>
 </Page>
