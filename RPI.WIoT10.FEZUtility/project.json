@@ -1,7 +1,7 @@
 ﻿{
   "dependencies": {
     "GHIElectronics.UWP.LowLevelDrivers": "0.1.0",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3"
   },
   "frameworks": {
     "uap10.0": {}
